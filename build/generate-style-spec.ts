@@ -265,6 +265,7 @@ export type LegacyFilterSpecification =
     | ['>=', string, string | number | boolean]
     | ['<', string, string | number | boolean]
     | ['<=', string, string | number | boolean]
+    | ['~=', string, string]
     // Set membership
     | ['in', string, ...(string | number | boolean)[]]
     | ['!in', string, ...(string | number | boolean)[]]
