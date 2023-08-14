@@ -66,7 +66,8 @@ export default function convertFilter(filter: FilterSpecification, expectedTypes
         case '<':
         case '>':
         case '<=':
-        case '>=': {
+        case '>=':
+        case '~=': {
             const [, property, value] = filter;
             return convertComparisonOp(property as string, value, legacyOp, expectedTypes);
         }

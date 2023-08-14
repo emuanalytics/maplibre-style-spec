@@ -115,6 +115,28 @@ describe('filter', () => {
         expect(caseInsensitive({zoom: 0}, {properties: {x: 'a', y: 'a'}} as any as Feature)).toBe(true);
     });
 
+    test('expression, test case-insensitive regexp with two properties', () => {
+        jest.spyOn(console, 'warn').mockImplementation(() => { });
+        const f = createFilter(['~=', ['string', ['get', 'x']], ['string', ['get', 'y']], ['collator', {'case-sensitive': false}]]).filter;
+        expect(f({zoom: 0}, {properties: {x: 'same', y: 'same'}} as any as Feature)).toBe(true);
+        expect(f({zoom: 0}, {properties: {x: 'same', y: 'Same'}} as any as Feature)).toBe(true);
+        expect(f({zoom: 0}, {properties: {x: 'same', y: 'different'}} as any as Feature)).toBe(false);
+        expect(f({zoom: 0}, {properties: {x: 'same', y: '^sa'}} as any as Feature)).toBe(true);
+        expect(f({zoom: 0}, {properties: {x: null}, y: 'test'} as any as Feature)).toBe(false);
+        expect(f({zoom: 0}, {properties: {x: undefined, y: 'test'}} as any as Feature)).toBe(false);
+    });
+
+    test('expression, test regexp with two properties', () => {
+        jest.spyOn(console, 'warn').mockImplementation(() => { });
+        const f = createFilter(['~=', ['string', ['get', 'x']], ['string', ['get', 'y']]]).filter;
+        expect(f({zoom: 0}, {properties: {x: 'same', y: 'same'}} as any as Feature)).toBe(true);
+        expect(f({zoom: 0}, {properties: {x: 'same', y: 'Same'}} as any as Feature)).toBe(false);
+        expect(f({zoom: 0}, {properties: {x: 'same', y: 'different'}} as any as Feature)).toBe(false);
+        expect(f({zoom: 0}, {properties: {x: 'same', y: '^sa'}} as any as Feature)).toBe(true);
+        expect(f({zoom: 0}, {properties: {x: null}, y: 'test'} as any as Feature)).toBe(false);
+        expect(f({zoom: 0}, {properties: {x: undefined, y: 'test'}} as any as Feature)).toBe(false);
+    });
+
     test('expression, any/all', () => {
         expect(createFilter(['all']).filter(undefined, undefined)).toBe(true);
         expect(createFilter(['all', true]).filter(undefined, undefined)).toBe(true);
@@ -391,6 +413,15 @@ function legacyFilterTests(createFilterExpr) {
         const f = createFilterExpr(['!=', '$type', 'LineString']).filter;
         expect(f({zoom: 0}, {type: 1})).toBe(true);
         expect(f({zoom: 0}, {type: 2})).toBe(false);
+    });
+
+    test('~=, string', () => {
+        const f = createFilterExpr(['~=', 'foo', '^bar']).filter;
+        expect(f({zoom: 0}, {properties: {foo: 'bar'}})).toBe(true);
+        expect(f({zoom: 0}, {properties: {foo: 'Bar'}})).toBe(false);
+        expect(f({zoom: 0}, {properties: {foo: 'baz'}})).toBe(false);
+        expect(f({zoom: 0}, {properties: {foo: 'bare'}})).toBe(true);
+        expect(f({zoom: 0}, {properties: {foo: 'abar'}})).toBe(false);
     });
 
     test('<, number', () => {

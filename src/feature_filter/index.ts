@@ -44,6 +44,7 @@ function isExpressionFilter(filter: any): filter is ExpressionFilterSpecificatio
         case '>=':
         case '<':
         case '<=':
+        case '~=':
             return filter.length !== 3 || (Array.isArray(filter[1]) || Array.isArray(filter[2]));
 
         case 'any':
@@ -123,7 +124,8 @@ function convertFilter(filter?: Array<any> | null): unknown {
                 op === '<' ||
         op === '>' ||
         op === '<=' ||
-        op === '>=' ? convertComparisonOp(filter[1], filter[2], op) :
+        op === '>=' ||
+        op === '~=' ? convertComparisonOp(filter[1], filter[2], op) :
                     op === 'any' ? convertDisjunctionOp(filter.slice(1)) :
                         op === 'all' ? ['all' as unknown].concat(filter.slice(1).map(convertFilter)) :
                             op === 'none' ? ['all' as unknown].concat(filter.slice(1).map(convertFilter).map(convertNegation)) :

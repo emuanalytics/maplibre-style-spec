@@ -1,0 +1,9 @@
+{
+  "[typescript]": {
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": false
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+},
+"editor.detectIndentation": true
+}
