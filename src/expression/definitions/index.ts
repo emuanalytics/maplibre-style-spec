@@ -57,7 +57,7 @@ const expressions: ExpressionRegistry = {
     '<': LessThan,
     '>=': GreaterThanOrEqual,
     '<=': LessThanOrEqual,
-    '~=': RegexTest,
+    '~': RegexTest,
     'array': Assertion,
     'at': At,
     'boolean': Assertion,
@@ -383,7 +383,7 @@ CompoundExpression.register(expressions, {
         [StringType],
         (ctx, [v]) => ctx.geometryType() === (v as any).value
     ],
-    'filter-~=': [
+    'filter-~': [
         BooleanType,
         [StringType, ValueType],
         (ctx, [k, v]) => RegExp((v as any).value).test(ctx.properties()[(k as any).value])

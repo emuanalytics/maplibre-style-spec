@@ -8,7 +8,7 @@ import type EvaluationContext from '../evaluation_context';
 import type ParsingContext from '../parsing_context';
 import type {Type} from '../types';
 
-type ComparisonOperator = '==' | '!=' | '<' | '>' | '<=' | '>=' | '~=';
+type ComparisonOperator = '==' | '!=' | '<' | '>' | '<=' | '>=' | '~';
 
 function isComparableType(op: ComparisonOperator, type: Type) {
     if (op === '==' || op === '!=') {
@@ -18,7 +18,7 @@ function isComparableType(op: ComparisonOperator, type: Type) {
             type.kind === 'number' ||
             type.kind === 'null' ||
             type.kind === 'value';
-    } else if (op === '~=') {
+    } else if (op === '~') {
         // regex operator
         return type.kind === 'string' || 'value';
     } else {
@@ -65,7 +65,7 @@ function regexCollate(ctx, a, b, c) {
  * @private
  */
 function makeComparison(op: ComparisonOperator, compareBasic, compareWithCollator) {
-    const isOrderComparison = op !== '==' && op !== '!=' && op !== '~=';
+    const isOrderComparison = op !== '==' && op !== '!=' && op !== '~';
 
     return class Comparison implements Expression {
         type: Type;
@@ -181,4 +181,4 @@ export const LessThan = makeComparison('<', lt, ltCollate);
 export const GreaterThan = makeComparison('>', gt, gtCollate);
 export const LessThanOrEqual = makeComparison('<=', lteq, lteqCollate);
 export const GreaterThanOrEqual = makeComparison('>=', gteq, gteqCollate);
-export const RegexTest = makeComparison('~=', regex, regexCollate);
+export const RegexTest = makeComparison('~', regex, regexCollate);

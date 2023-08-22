@@ -22,7 +22,7 @@ export const types = {
     '<=': comparisonSignatures,
     '>': comparisonSignatures,
     '>=': comparisonSignatures,
-    '~=': comparisonSignatures,
+    '~': comparisonSignatures,
     string: [
         {
             type: 'string',

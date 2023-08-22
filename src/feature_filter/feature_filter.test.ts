@@ -117,7 +117,7 @@ describe('filter', () => {
 
     test('expression, test case-insensitive regexp with two properties', () => {
         jest.spyOn(console, 'warn').mockImplementation(() => { });
-        const f = createFilter(['~=', ['string', ['get', 'x']], ['string', ['get', 'y']], ['collator', {'case-sensitive': false}]]).filter;
+        const f = createFilter(['~', ['string', ['get', 'x']], ['string', ['get', 'y']], ['collator', {'case-sensitive': false}]]).filter;
         expect(f({zoom: 0}, {properties: {x: 'same', y: 'same'}} as any as Feature)).toBe(true);
         expect(f({zoom: 0}, {properties: {x: 'same', y: 'Same'}} as any as Feature)).toBe(true);
         expect(f({zoom: 0}, {properties: {x: 'same', y: 'different'}} as any as Feature)).toBe(false);
@@ -128,7 +128,7 @@ describe('filter', () => {
 
     test('expression, test regexp with two properties', () => {
         jest.spyOn(console, 'warn').mockImplementation(() => { });
-        const f = createFilter(['~=', ['string', ['get', 'x']], ['string', ['get', 'y']]]).filter;
+        const f = createFilter(['~', ['string', ['get', 'x']], ['string', ['get', 'y']]]).filter;
         expect(f({zoom: 0}, {properties: {x: 'same', y: 'same'}} as any as Feature)).toBe(true);
         expect(f({zoom: 0}, {properties: {x: 'same', y: 'Same'}} as any as Feature)).toBe(false);
         expect(f({zoom: 0}, {properties: {x: 'same', y: 'different'}} as any as Feature)).toBe(false);
@@ -415,8 +415,8 @@ function legacyFilterTests(createFilterExpr) {
         expect(f({zoom: 0}, {type: 2})).toBe(false);
     });
 
-    test('~=, string', () => {
-        const f = createFilterExpr(['~=', 'foo', '^bar']).filter;
+    test('~, string', () => {
+        const f = createFilterExpr(['~', 'foo', '^bar']).filter;
         expect(f({zoom: 0}, {properties: {foo: 'bar'}})).toBe(true);
         expect(f({zoom: 0}, {properties: {foo: 'Bar'}})).toBe(false);
         expect(f({zoom: 0}, {properties: {foo: 'baz'}})).toBe(false);

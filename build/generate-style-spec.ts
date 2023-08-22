@@ -187,7 +187,7 @@ export type ExpressionSpecification =
     | ['==', ExpressionInputType | ExpressionSpecification, ExpressionInputType | ExpressionSpecification, CollatorExpressionSpecification?] // boolean
     | ['>', ExpressionInputType | ExpressionSpecification, ExpressionInputType | ExpressionSpecification, CollatorExpressionSpecification?] // boolean
     | ['>=', ExpressionInputType | ExpressionSpecification, ExpressionInputType | ExpressionSpecification, CollatorExpressionSpecification?] // boolean
-    | ['~=', ExpressionInputType | ExpressionSpecification, ExpressionInputType | ExpressionSpecification, CollatorExpressionSpecification?] // boolean
+    | ['~', ExpressionInputType | ExpressionSpecification, ExpressionInputType | ExpressionSpecification, CollatorExpressionSpecification?] // boolean
     | ['all', ...(boolean | ExpressionSpecification)[]] // boolean
     | ['any', ...(boolean | ExpressionSpecification)[]] // boolean
     | ['case', boolean | ExpressionSpecification, ExpressionInputType | ExpressionSpecification,
@@ -265,7 +265,7 @@ export type LegacyFilterSpecification =
     | ['>=', string, string | number | boolean]
     | ['<', string, string | number | boolean]
     | ['<=', string, string | number | boolean]
-    | ['~=', string, string]
+    | ['~', string, string]
     // Set membership
     | ['in', string, ...(string | number | boolean)[]]
     | ['!in', string, ...(string | number | boolean)[]]

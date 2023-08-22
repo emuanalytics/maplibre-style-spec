@@ -3643,7 +3643,7 @@
           }
         }
       },
-      "~=": {
+      "~": {
         "doc": "Returns `true` if the first string input matches the regular expression supplied as the second string input. Accepts an optional `collator` argument to control case sensitivity.",
         "group": "Decision",
         "sdk-support": {
