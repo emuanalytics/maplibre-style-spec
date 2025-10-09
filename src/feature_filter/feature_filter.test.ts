@@ -1,11 +1,11 @@
-import {featureFilter, isExpressionFilter} from '.';
+import { featureFilter, isExpressionFilter } from '.';
 
-import {convertFilter} from './convert';
-import {ICanonicalTileID} from '../tiles_and_coordinates';
-import {FilterSpecification} from '../types.g';
-import {Feature} from '../expression';
-import {getGeometry} from '../../test/lib/geometry';
-import {describe, test, expect, vi, beforeEach} from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { getGeometry } from '../../test/lib/geometry';
+import { Feature } from '../expression';
+import { ICanonicalTileID } from '../tiles_and_coordinates';
+import { FilterSpecification } from '../types.g';
+import { convertFilter } from './convert';
 
 describe('filter', () => {
     test('expression, zoom', () => {
@@ -38,6 +38,26 @@ describe('filter', () => {
         expect(caseInsensitive({zoom: 0}, {properties: {x: 'a', y: 'b'}} as any as Feature)).toBe(false);
         expect(caseInsensitive({zoom: 0}, {properties: {x: 'a', y: 'A'}} as any as Feature)).toBe(true);
         expect(caseInsensitive({zoom: 0}, {properties: {x: 'a', y: 'a'}} as any as Feature)).toBe(true);
+    });
+
+    test('expression, test case-insensitive regexp with two properties', () => {
+        const f = featureFilter(['~', ['string', ['get', 'x']], ['string', ['get', 'y']], ['collator', {'case-sensitive': false}]]).filter;
+        expect(f({zoom: 0}, {properties: {x: 'same', y: 'same'}} as any as Feature)).toBe(true);
+        expect(f({zoom: 0}, {properties: {x: 'same', y: 'Same'}} as any as Feature)).toBe(true);
+        expect(f({zoom: 0}, {properties: {x: 'same', y: 'different'}} as any as Feature)).toBe(false);
+        expect(f({zoom: 0}, {properties: {x: 'same', y: '^sa'}} as any as Feature)).toBe(true);
+        expect(f({zoom: 0}, {properties: {x: null}, y: 'test'} as any as Feature)).toBe(false);
+        expect(f({zoom: 0}, {properties: {x: undefined, y: 'test'}} as any as Feature)).toBe(false);
+    });
+
+    test('expression, test regexp with two properties', () => {
+        const f = featureFilter(['~', ['string', ['get', 'x']], ['string', ['get', 'y']]]).filter;
+        expect(f({zoom: 0}, {properties: {x: 'same', y: 'same'}} as any as Feature)).toBe(true);
+        expect(f({zoom: 0}, {properties: {x: 'same', y: 'Same'}} as any as Feature)).toBe(false);
+        expect(f({zoom: 0}, {properties: {x: 'same', y: 'different'}} as any as Feature)).toBe(false);
+        expect(f({zoom: 0}, {properties: {x: 'same', y: '^sa'}} as any as Feature)).toBe(true);
+        expect(f({zoom: 0}, {properties: {x: null}, y: 'test'} as any as Feature)).toBe(false);
+        expect(f({zoom: 0}, {properties: {x: undefined, y: 'test'}} as any as Feature)).toBe(false);
     });
 
     test('expression, any/all', () => {

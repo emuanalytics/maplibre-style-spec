@@ -2800,6 +2800,9 @@
       "<=": {
         "doc": "`[\"<=\", key, value]` less than or equal: `feature[key] ≤ value`"
       },
+      "~": {
+        "doc": "`[\"~\", key, value]` regex match: `feature[key] ~ value`"
+      },
       "in": {
         "doc": "`[\"in\", key, v0, ..., vn]` set inclusion: `feature[key] ∈ {v0, ..., vn}`"
       },
@@ -5208,6 +5211,43 @@
           ]
         },
         "example": ["<=", ["get", "mag"], 6],
+        "group": "Decision",
+        "sdk-support": {
+          "basic functionality": {
+            "js": "0.41.0",
+            "android": "6.0.0",
+            "ios": "4.0.0"
+          },
+          "collator": {
+            "js": "0.45.0",
+            "android": "6.5.0",
+            "ios": "4.2.0"
+          }
+        }
+      },
+      "~": {
+
+        "doc": "Returns `true` if the first string input matches the regular expression supplied as the second string input. Accepts an optional `collator` argument to control case sensitivity.",
+        "syntax": {
+          "overloads": [
+            {
+              "parameters": ["string_1", "string_2", "collator?"],
+              "output-type": "boolean"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "string_i",
+              "type": "string"
+            },
+            {
+              "name": "collator",
+              "type": "collator",
+              "description": "Options for locale-dependent comparison."
+            }
+          ]
+        },
+        "example": ["~", ["get", "name"], "^Test.*"],
         "group": "Decision",
         "sdk-support": {
           "basic functionality": {

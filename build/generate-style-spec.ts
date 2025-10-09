@@ -257,6 +257,7 @@ export type ExpressionSpecification =
     | ['==', null | ExpressionInputType | ExpressionSpecification, null | ExpressionInputType | ExpressionSpecification, CollatorExpressionSpecification?] // boolean
     | ['>', string | number | ExpressionSpecification, string | number | ExpressionSpecification, CollatorExpressionSpecification?] // boolean
     | ['>=', string | number | ExpressionSpecification, string | number | ExpressionSpecification, CollatorExpressionSpecification?] // boolean
+    | ['~', string | ExpressionSpecification, string | ExpressionSpecification, CollatorExpressionSpecification?] // boolean
     | ['all', ...(boolean | ExpressionSpecification)[]] // boolean
     | ['any', ...(boolean | ExpressionSpecification)[]] // boolean
     | ['case', boolean | ExpressionSpecification, null | ExpressionInputType | ExpressionSpecification,
@@ -338,6 +339,7 @@ export type LegacyFilterSpecification =
     | ['>=', string, string | number | boolean]
     | ['<', string, string | number | boolean]
     | ['<=', string, string | number | boolean]
+    | ['~', string, string | number | boolean]
     // Set membership
     | ['in', string, ...(string | number | boolean)[]]
     | ['!in', string, ...(string | number | boolean)[]]
