@@ -18,7 +18,8 @@ import {
     LessThan,
     GreaterThan,
     LessThanOrEqual,
-    GreaterThanOrEqual
+    GreaterThanOrEqual,
+    RegexTest
 } from './comparison';
 import {CollatorExpression} from './collator';
 import {NumberFormat} from './number_format';
@@ -39,6 +40,7 @@ export const expressions: ExpressionRegistry = {
     '>': GreaterThan,
     '<': LessThan,
     '>=': GreaterThanOrEqual,
+    '~': RegexTest,
     '<=': LessThanOrEqual,
     array: Assertion,
     at: At,

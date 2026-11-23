@@ -1,5 +1,5 @@
 {
-  "name": "@maplibre/maplibre-gl-style-spec",
+  "name": "@emuanalytics/maplibre-gl-style-spec",
   "description": "a specification for maplibre styles",
   "version": "26.8.0",
   "author": "MapLibre",

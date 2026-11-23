@@ -23,6 +23,7 @@ import {Coercion} from './definitions/coercion';
 import {Var} from './definitions/var';
 import {Distance} from './definitions/distance';
 import {GlobalState} from './definitions/global_state';
+import {regexMatch} from './regexp_cache';
 
 import type {Expression, ExpressionRegistry} from './expression';
 import type {Value} from './values';
@@ -442,6 +443,12 @@ CompoundExpression.register(expressions, {
             return typeof a === typeof b && a >= b;
         }
     ],
+    'filter-~': [
+        BooleanType,
+        [StringType, ValueType],
+        (ctx, [k, v]) => regexMatch(ctx.properties()[(k as any).value], (v as any).value)
+    ],
+    'filter-id-~': [BooleanType, [ValueType], (ctx, [v]) => regexMatch(ctx.id(), (v as any).value)],
     'filter-has': [
         BooleanType,
         [ValueType],

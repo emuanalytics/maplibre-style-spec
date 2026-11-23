@@ -3326,6 +3326,9 @@
       "<=": {
         "doc": "`[\"<=\", key, value]` less than or equal: `feature[key] ≤ value`"
       },
+      "~": {
+        "doc": "`[\"~\", key, value]` regular expression match: `feature[key]` matches the pattern `value`. Numbers are matched as their text. An Emu Analytics addition."
+      },
       "in": {
         "doc": "`[\"in\", key, v0, ..., vn]` set inclusion: `feature[key] ∈ {v0, ..., vn}`"
       },
@@ -5935,6 +5938,46 @@
           ]
         },
         "example": ["<=", ["get", "mag"], 6],
+        "group": "Decision",
+        "sdk-support": {
+          "basic functionality": {
+            "js": "0.41.0",
+            "android": "6.0.0",
+            "ios": "4.0.0"
+          },
+          "collator": {
+            "js": "0.45.0",
+            "android": "6.5.0",
+            "ios": "4.2.0"
+          }
+        }
+      },
+      "~": {
+        "doc": "Returns `true` if the first input matches the regular expression given as the second input, `false` otherwise. Numbers are matched as their text; if either input is not a string or a number at evaluation, the result is `false`. Accepts an optional [`collator`](expressions/#collator) argument: unless it is case-sensitive, the match ignores case. An Emu Analytics addition.",
+        "syntax": {
+          "overloads": [
+            {
+              "parameters": ["input", "pattern", "collator?"],
+              "output-type": "boolean"
+            }
+          ],
+          "parameters": [
+            {
+              "name": "input",
+              "type": "string | number"
+            },
+            {
+              "name": "pattern",
+              "type": "string | number"
+            },
+            {
+              "name": "collator",
+              "type": "collator",
+              "doc": "Options for case sensitivity."
+            }
+          ]
+        },
+        "example": ["~", ["get", "name"], "^Test.*"],
         "group": "Decision",
         "sdk-support": {
           "basic functionality": {

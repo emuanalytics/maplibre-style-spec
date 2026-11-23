@@ -80,7 +80,7 @@
     "line": 159
   },
   {
-    "message": "layers[16].filter[2][0]: expected one of [==, !=, >, >=, <, <=, in, !in, all, any, none, has, !has], \"case\" found",
+    "message": "layers[16].filter[2][0]: expected one of [==, !=, >, >=, <, <=, ~, in, !in, all, any, none, has, !has], \"case\" found",
     "severity": "error",
     "line": 166
   },

@@ -85,6 +85,7 @@ function validateNonExpressionFilter(options: any): ValidationError[] {
         case '<=':
         case '>':
         case '>=':
+        case '~':
             if (value.length >= 2 && unbundle(value[1]) === '$type') {
                 errors.push(
                     new ValidationError(

@@ -2,13 +2,14 @@ import {typeToString, ValueType, BooleanType, CollatorType} from '../types';
 import {Assertion} from './assertion';
 import {typeOf} from '../values';
 import {RuntimeError} from '../runtime_error';
+import {regexMatch} from '../regexp_cache';
 
 import type {Expression} from '../expression';
 import type {EvaluationContext} from '../evaluation_context';
 import type {ParsingContext} from '../parsing_context';
 import type {Type} from '../types';
 
-type ComparisonOperator = '==' | '!=' | '<' | '>' | '<=' | '>=';
+type ComparisonOperator = '==' | '!=' | '<' | '>' | '<=' | '>=' | '~';
 
 function isComparableType(op: ComparisonOperator, type: Type) {
     if (op === '==' || op === '!=') {
@@ -20,6 +21,9 @@ function isComparableType(op: ComparisonOperator, type: Type) {
             type.kind === 'null' ||
             type.kind === 'value'
         );
+    } else if (op === '~') {
+        // regex operator: numbers are matched as their text
+        return type.kind === 'string' || type.kind === 'number' || type.kind === 'value';
     } else {
         // ordering operator
         return type.kind === 'string' || type.kind === 'number' || type.kind === 'value';
@@ -45,6 +49,10 @@ function gteq(ctx, a, b) {
     return a >= b;
 }
 
+function regex(ctx, a, b) {
+    return regexMatch(a, b);
+}
+
 function eqCollate(ctx, a, b, c) {
     return c.compare(a, b) === 0;
 }
@@ -63,6 +71,10 @@ function lteqCollate(ctx, a, b, c) {
 function gteqCollate(ctx, a, b, c) {
     return c.compare(a, b) >= 0;
 }
+function regexCollate(ctx, a, b, c) {
+    const caseSensitive = c.sensitivity === 'case' || c.sensitivity === 'variant';
+    return regexMatch(a, b, caseSensitive ? '' : 'i');
+}
 
 /**
  * Special form for comparison operators, implementing the signatures:
@@ -71,7 +83,8 @@ function gteqCollate(ctx, a, b, c) {
  * - (value, T, ?Collator) => boolean
  *
  * For inequalities, T must be either value, string, or number. For ==/!=, it
- * can also be boolean or null.
+ * can also be boolean or null. For ~ (regular expression match, an Emu Analytics addition), T must be value,
+ * string, or number, the two sides may differ, and a side that isn't a string or number at evaluation doesn't match.
  *
  * Equality semantics are equivalent to Javascript's strict equality (===/!==)
  * -- i.e., when the arguments' types don't match, == evaluates to false, != to
@@ -82,7 +95,7 @@ function gteqCollate(ctx, a, b, c) {
  * @private
  */
 function makeComparison(op: ComparisonOperator, compareBasic, compareWithCollator) {
-    const isOrderComparison = op !== '==' && op !== '!=';
+    const isOrderComparison = op !== '==' && op !== '!=' && op !== '~';
 
     return class Comparison implements Expression {
         type: Type = BooleanType;
@@ -123,6 +136,7 @@ function makeComparison(op: ComparisonOperator, compareBasic, compareWithCollato
             }
 
             if (
+                op !== '~' &&
                 lhs.type.kind !== rhs.type.kind &&
                 lhs.type.kind !== 'value' &&
                 rhs.type.kind !== 'value'
@@ -211,3 +225,4 @@ export const LessThan = makeComparison('<', lt, ltCollate);
 export const GreaterThan = makeComparison('>', gt, gtCollate);
 export const LessThanOrEqual = makeComparison('<=', lteq, lteqCollate);
 export const GreaterThanOrEqual = makeComparison('>=', gteq, gteqCollate);
+export const RegexTest = makeComparison('~', regex, regexCollate);

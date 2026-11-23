@@ -84,6 +84,7 @@ function classifyFilter(filter: any): FilterClassification {
         case '>=':
         case '<':
         case '<=':
+        case '~':
             return filter.length !== 3 || Array.isArray(filter[1]) || Array.isArray(filter[2])
                 ? 'expression'
                 : 'legacy';
@@ -117,6 +118,7 @@ function getLegacyFilterExpressionSuggestion(filter: Array<any>): unknown {
         case '<=':
         case '>':
         case '>=':
+        case '~':
             if (filter.length !== 3 || typeof filter[1] !== 'string') return null;
             return [filter[0], getFilterPropertyExpression(filter[1]), filter[2]];
 
@@ -146,7 +148,11 @@ function getLegacyFilterExpressionSuggestion(filter: Array<any>): unknown {
 
 export function getMixedFilterMessage(filter: Array<any>): string {
     if (
-        (filter[0] === '<' || filter[0] === '<=' || filter[0] === '>' || filter[0] === '>=') &&
+        (filter[0] === '<' ||
+            filter[0] === '<=' ||
+            filter[0] === '>' ||
+            filter[0] === '>=' ||
+            filter[0] === '~') &&
         filter[1] === '$type'
     ) {
         return `"$type" cannot be use with operator "${filter[0]}"`;
@@ -302,7 +308,7 @@ function convertFilter(filter?: Array<any> | null | void): unknown {
             ? convertComparisonOp(filter[1], filter[2], '==')
             : op === '!='
               ? convertNegation(convertComparisonOp(filter[1], filter[2], '=='))
-              : op === '<' || op === '>' || op === '<=' || op === '>='
+              : op === '<' || op === '>' || op === '<=' || op === '>=' || op === '~'
                 ? convertComparisonOp(filter[1], filter[2], op)
                 : op === 'any'
                   ? convertDisjunctionOp(filter.slice(1))
